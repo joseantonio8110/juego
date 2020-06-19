@@ -45,6 +45,15 @@ for(i=0; i<5; i++){
 	p = p - 5;
 }
 // notas pentagrama
+var r = 1.5;
+var x = 35;
+for(i=0; i<7; i++){
+    ctx.beginPath();
+    y = Math.round(Math.random()*(30-10)+parseInt(10));
+    ctx.arc(x,y,r,0,2*Math.PI);
+    ctx.stroke();
+    x = x + 15;
+}
 function finTouch(event) {
  var x = event.touches[0].clientX;
  var y = event.touches[0].clientY;
