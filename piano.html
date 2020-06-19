@@ -43,7 +43,7 @@ function finTouch(event) {
  var y = event.touches[0].clientY;
  //averiguar en qué tecla apretó => nota, o qué dibujo => objeto
 if (x >= 0 && x <= 23 && y >= 38 && y <= 76){
-    function sonar (){
+function sonar (){
     var f = 440;
     var d = 1;
     var t = 4;
@@ -52,18 +52,20 @@ if (x >= 0 && x <= 23 && y >= 38 && y <= 76){
     var blob = bufferToWaveBlob(son,fm);
     document.querySelector("audio").src = URL.createObjectURL(blob);
     document.getElementById("audio").play();
-    };
-    function crearSonido(tono,caida,duracion,fmuestreo){
+};
+
+function crearSonido(tono,caida,duracion,fmuestreo){
     var lng = duracion * fmuestreo;
     var dt = 1/fmuestreo;
     var sonido = new Array(lng);
     var i,t;
     var w = tono*2*Math.PI;
-    	for (i=0,t=0;i<lng;i++,t+=dt){
-        	sonido[i] = Math.sin(w*t)*(Math.exp(-t*4.6/caida));
-    	}
-    return sonido;
+    for (i=0,t=0;i<lng;i++,t+=dt){
+        sonido[i] = Math.sin(w*t)*(Math.exp(-t*4.6/caida));
     }
+    return sonido;
+}
+
 function bufferToWaveBlob(sonido,_sampleRate) {
     function setUint16(data) {
 		view.setUint16(pos, data, true);
@@ -112,8 +114,7 @@ function bufferToWaveBlob(sonido,_sampleRate) {
 
 	// create Blob
 	return new Blob([buffer], {type: "audio/wav"});
-}	
-	
+}
 }
 if (x >= 23 && x <= 46 && y >= 38 && y <= 76){
       jugada = "re";
