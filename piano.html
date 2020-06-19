@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <background-color: Bisque;>
+    <canvas id="myCanvas" width="161" height="76" style="border:1px solid #0d0000;">
+    <audio controls id="audio"></audio>
+    </canvas>
+<script>
+var ancho = 161;
+var alto = 76;
+var canva = document.getElementById("myCanvas");
+var ctx = canva.getContext("2d");
+var osc,mediaRecorder;
+var chunks = [];
+var clicked = false;
+  // Color de fondo 
+ctx.fillStyle = "bisque"
+ctx.fillRect(0,0,ancho,alto);
+  // Teclas blancas 
+ctx.fillStyle = "#F5F7F9";
+for (i=0; i<7; i++){
+  ctx.fillRect (i*ancho/7,alto/2,ancho/7,alto/2);
+  ctx.strokeRect(i*ancho/7,alto/2,ancho/7,alto/2);
+}
+// Teclas negras
+ctx.fillStyle = "#000000";
+for (i=0; i<6; i++){
+	if (i == 2){
+    	continue;
+    }
+  ctx.fillRect ((i*ancho/7)+0.75*ancho/7,alto/2,ancho/14,alto/4);
+}
+// Pentagrama
+var p = 30;
+for(i=0; i<5; i++){
+	ctx.moveTo(15,p);
+	ctx.lineTo(145,p);
+	ctx.stroke();
+    p = p - 5;
+}
+function finTouch(event) {
+ var x = event.touches[0].clientX;
+ var y = event.touches[0].clientY;
+ //averiguar en qué tecla apretó => nota, o qué dibujo => objeto
+if (x >= 0 && x <= 23 && y >= 38 && y <= 76){
+    function sonar (){
+    var f = 440;
+    var d = 1;
+    var t = 4;
+    var fm = 44100;
+    var son = crearSonido(f,d,t,fm);
+    var blob = bufferToWaveBlob(son,fm);
+    document.querySelector("audio").src = URL.createObjectURL(blob);
+    document.getElementById("audio").play();
+    };
+    function crearSonido(tono,caida,duracion,fmuestreo){
+    var lng = duracion * fmuestreo;
+    var dt = 1/fmuestreo;
+    var sonido = new Array(lng);
+    var i,t;
+    var w = tono*2*Math.PI;
+    	for (i=0,t=0;i<lng;i++,t+=dt){
+        	sonido[i] = Math.sin(w*t)*(Math.exp(-t*4.6/caida));
+    	}
+    return sonido;
+    }
+function bufferToWaveBlob(sonido,_sampleRate) {
+    function setUint16(data) {
+		view.setUint16(pos, data, true);
+		pos += 2;
+	}
+
+	function setUint32(data) {
+		view.setUint32(pos, data, true);
+		pos += 4;
+	}
+    var len = sonido.length;
+    var numOfChan = 1;
+    var sampleRate = _sampleRate;
+	var length = len * numOfChan * 2 + 44;
+	var buffer = new ArrayBuffer(length);
+	var view = new DataView(buffer);
+	var i;
+	var sample;
+	var offset = 0;
+	var pos = 0;
+
+	// write WAVE header
+	setUint32(0x46464952);                         // "RIFF"
+	setUint32(length - 8);                         // file length - 8
+	setUint32(0x45564157);                         // "WAVE"
+
+	setUint32(0x20746d66);                         // "fmt " chunk
+	setUint32(16);                                 // length = 16
+	setUint16(1);                                  // PCM (uncompressed)
+	setUint16(numOfChan);
+	setUint32(sampleRate);
+	setUint32(sampleRate * 2 * numOfChan);         // avg. bytes/sec
+	setUint16(numOfChan * 2);                      // block-align
+	setUint16(16);                                 // 16-bit (hardcoded in this demo)
+
+	setUint32(0x61746164);                         // "data" - chunk
+	setUint32(length - pos - 4);                   // chunk length
+
+	while(pos<length) {
+		sample = Math.max(-1, Math.min(1, sonido[offset])); // clamp
+		sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; // scale to 16-bit signed int
+		view.setInt16(pos, sample, true);          // write 16-bit sample
+		pos += 2;
+		offset++                                     // next source sample
+	}
+
+	// create Blob
+	return new Blob([buffer], {type: "audio/wav"});
+}	
+	
+}
+if (x >= 23 && x <= 46 && y >= 38 && y <= 76){
+      jugada = "re";
+ }
+if (x >= 46 && x <= 69 && y >= 38 && y <= 76){
+      jugada = "mi";
+ }
+if (x >= 69 && x <= 92 && y >= 38 && y <= 76){
+      jugada = "fa";
+ }
+if (x >= 92 && x <= 115 && y >= 38 && y <= 76){
+      jugada = "sol";
+ }
+if (x >= 115 && x <= 138 && y >= 38 && y <= 76){
+      jugada = "la";
+ }
+if (x >= 138 && x <= 161 && y >= 38 && y <= 76){
+      jugada = "si";
+ }
+
+// sostenido 
+if (x >= 17 && x <= 28 && y >= 38 && y <= 57){
+      jugada = "do_sostenido";
+ }
+if (x >= 63 && x <= 75 && y >= 38 && y <= 57){
+      jugada = "mi_sostenido";
+ }
+if (x >= 86 && x <= 98 && y >= 38 && y <= 57){
+      jugada = "fa_sostenido";
+ }
+if (x >= 109 && x <= 121 && y >= 38 && y <= 57){
+      jugada = "sol_sostenido";
+ }
+if (x >= 132 && x <= 122 && y >= 38 && y <= 57){
+      jugada = "la_sostenido";
+ }
+
+ pintarMiJugada(objeto);
+ jugar(objeto);
+}
+</script>
+  </body>
+</html>
