@@ -11,7 +11,9 @@ var ancho = 161;
 var alto = 76;
 var canva = document.getElementById("myCanvas");
 var ctx = canva.getContext("2d");
+var osc,mediaRecorder;
 var chunks = [];
+var clicked = false;
   // Color de fondo 
 ctx.fillStyle = "bisque"
 ctx.fillRect(0,0,ancho,alto);
